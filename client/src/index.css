@@ -1,0 +1,148 @@
+:root {
+  --primary-color: #d81b60; /* Vibrant Pink/Red */
+  --secondary-color: #880e4f;
+  --background-color: #fce4ec;
+  --text-color: #212121;
+  --white: #ffffff;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --radius: 12px;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 800px;
+  padding: 20px;
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+h1 {
+  color: var(--secondary-color);
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--white);
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px 16px;
+  font-size: 1rem;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  color: var(--text-color);
+}
+
+button:hover {
+  background-color: rgba(216, 27, 96, 0.1);
+}
+
+button.active {
+  background-color: var(--primary-color);
+  color: var(--white);
+  font-weight: bold;
+}
+
+.booking-form-container, .admin-dashboard {
+  background: var(--white);
+  padding: 30px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--secondary-color);
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+  box-sizing: border-box; /* Fix width issue */
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+button[type="submit"] {
+  width: 100%;
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 14px;
+  font-size: 1.1rem;
+  margin-top: 10px;
+}
+
+button[type="submit"]:hover {
+  background-color: var(--secondary-color);
+}
+
+.message {
+  text-align: center;
+  color: green;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+/* Admin Table */
+.requests-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.requests-table th, .requests-table td {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.requests-table th {
+  color: var(--secondary-color);
+}
+
+.requests-table tr:hover {
+  background-color: #f9f9f9;
+}
