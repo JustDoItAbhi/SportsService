@@ -10,7 +10,11 @@ const DATA_FILE = path.join(__dirname, 'data', 'requests.json');
 
 // Middleware
 app.use(cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    origin: [
+        'http://localhost:3000',
+        'https://sportsservice-frontend.onrender.com', // Your frontend URL once deployed
+        process.env.FRONTEND_URL
+    ].filter(Boolean),
     credentials: true
 }));
 app.use(bodyParser.json());
