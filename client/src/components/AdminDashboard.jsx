@@ -154,7 +154,115 @@ const AdminDashboard = () => {
                 </div>
             )}
 
-            {/* ... rest of your component remains the same ... */}
+            {/* Statistics Section */}
+            {statistics && (
+                <div className="statistics">
+                    <h3>Statistics</h3>
+                    <div className="stats-grid">
+                        <div className="stat-card total">
+                            <h4>Total</h4>
+                            <p>{statistics.total}</p>
+                        </div>
+                        <div className="stat-card pending">
+                            <h4>Pending</h4>
+                            <p>{statistics.byStatus.pending}</p>
+                        </div>
+                        <div className="stat-card confirmed">
+                            <h4>Confirmed</h4>
+                            <p>{statistics.byStatus.confirmed}</p>
+                        </div>
+                        <div className="stat-card completed">
+                            <h4>Completed</h4>
+                            <p>{statistics.byStatus.completed}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Filters Section */}
+            <div className="filters">
+                <select 
+                    value={selectedStatus} 
+                    onChange={(e) => setSelectedStatus(e.target.value)}
+                    className="status-filter"
+                >
+                    <option value="all">All Statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <button onClick={fetchRequests} className="refresh-btn">
+                    Refresh
+                </button>
+            </div>
+
+            {/* Requests Table Section */}
+            {loading ? (
+                <div className="loading">Loading requests...</div>
+            ) : filteredRequests.length === 0 ? (
+                <p className="no-requests">{t('admin.no_requests')}</p>
+            ) : (
+                <div className="requests-container">
+                    <table className="requests-table">
+                        <thead>
+                            <tr>
+                                <th>{t('admin.id')}</th>
+                                <th>{t('admin.client')}</th>
+                                <th>{t('admin.details')}</th>
+                                <th>{t('admin.status')}</th>
+                                <th>{t('admin.actions')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredRequests.map((req) => {
+                                const serviceKey = getServiceTranslationKey(req.service);
+                                return (
+                                    <tr key={req.id} className={`request-row status-${req.status}`}>
+                                        <td className="request-id">#{req.id}</td>
+                                        <td className="client-info">
+                                            <strong>{req.name}</strong><br />
+                                            <span className="phone">{req.phone}</span><br />
+                                            <small className="date">
+                                                {new Date(req.createdAt).toLocaleDateString()}
+                                            </small>
+                                        </td>
+                                        <td className="service-details">
+                                            <span className="service-type">
+                                                {t(`services.${serviceKey}`)}
+                                            </span><br />
+                                            <span className="appointment-time">
+                                                {new Date(req.time).toLocaleString()}
+                                            </span><br />
+                                            {req.notes && <small className="notes">{req.notes}</small>}
+                                        </td>
+                                        <td className="status-cell">
+                                            <select 
+                                                value={req.status} 
+                                                onChange={(e) => updateStatus(req.id, e.target.value)}
+                                                className={`status-select status-${req.status}`}
+                                            >
+                                                <option value="pending">Pending</option>
+                                                <option value="confirmed">Confirmed</option>
+                                                <option value="completed">Completed</option>
+                                                <option value="cancelled">Cancelled</option>
+                                            </select>
+                                        </td>
+                                        <td className="actions-cell">
+                                            <button 
+                                                className="btn-delete"
+                                                onClick={() => deleteRequest(req.id)}
+                                            >
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            )}
         </div>
     );
 };
