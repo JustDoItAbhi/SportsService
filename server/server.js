@@ -5,14 +5,15 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 5000; // Use Render's port
+const PORT = process.env.PORT || 5000;
 const DATA_FILE = path.join(__dirname, 'data', 'requests.json');
 
 // Middleware
 app.use(cors({
     origin: [
         'http://localhost:3000',
-        'https://sportsservice-frontend.onrender.com', // Your frontend URL once deployed
+        'https://sportsservice-frontend.onrender.com',
+        'http://localhost:5173',
         process.env.FRONTEND_URL
     ].filter(Boolean),
     credentials: true
@@ -25,7 +26,7 @@ if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
 }
 
-// Helper functions (keep your existing readData/writeData functions)
+// Helper functions
 const readData = () => {
     try {
         if (!fs.existsSync(DATA_FILE)) {
@@ -49,7 +50,7 @@ const writeData = (data) => {
     }
 };
 
-// Your existing API routes (keep all your existing routes)
+// API routes
 app.get('/api/requests', (req, res) => {
     const requests = readData();
     res.json(requests);
@@ -79,7 +80,55 @@ app.post('/api/requests', (req, res) => {
     res.status(201).json(newRequest);
 });
 
-// Add this health check route
+// ADD THESE MISSING ROUTES FOR ADMIN DASHBOARD
+app.put('/api/requests/:id', (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    
+    const requests = readData();
+    const requestIndex = requests.findIndex(req => req.id === parseInt(id));
+    
+    if (requestIndex === -1) {
+        return res.status(404).json({ error: "Request not found" });
+    }
+    
+    requests[requestIndex].status = status;
+    writeData(requests);
+    
+    res.json(requests[requestIndex]);
+});
+
+app.delete('/api/requests/:id', (req, res) => {
+    const { id } = req.params;
+    
+    const requests = readData();
+    const filteredRequests = requests.filter(req => req.id !== parseInt(id));
+    
+    if (requests.length === filteredRequests.length) {
+        return res.status(404).json({ error: "Request not found" });
+    }
+    
+    writeData(filteredRequests);
+    res.json({ message: "Request deleted successfully" });
+});
+
+app.get('/api/statistics', (req, res) => {
+    const requests = readData();
+    
+    const statistics = {
+        total: requests.length,
+        byStatus: {
+            pending: requests.filter(req => req.status === 'pending').length,
+            confirmed: requests.filter(req => req.status === 'confirmed').length,
+            completed: requests.filter(req => req.status === 'completed').length,
+            cancelled: requests.filter(req => req.status === 'cancelled').length
+        }
+    };
+    
+    res.json(statistics);
+});
+
+// Health check route
 app.get('/health', (req, res) => {
     res.status(200).json({ 
         status: 'OK', 

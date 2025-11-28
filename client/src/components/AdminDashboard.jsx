@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import './AdminDashboard.css';
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-console.log(API_BASE_URL);
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://sportsservice-backend.onrender.com';
+
 const AdminDashboard = () => {
     const { t } = useTranslation();
     const [requests, setRequests] = useState([]);
@@ -13,7 +14,20 @@ const AdminDashboard = () => {
     const [selectedStatus, setSelectedStatus] = useState('all');
     const [statistics, setStatistics] = useState(null);
 
-    const ADMIN_PASSWORD = 'MissTania2024';
+    const ADMIN_PASSWORD = 'miss2025';
+
+    // Map service values to translation keys
+    const getServiceTranslationKey = (serviceValue) => {
+        const serviceMap = {
+            'general-massage': 'GeneralMassage',
+            'therapeutic-preventive': 'therapeutic and preventive',
+            'sports': 'sports',
+            'lymphatic-drainage': 'lymphatic drainage',
+            'honey': 'honey',
+            'anti-cellulite': 'anti-Cellulite'
+        };
+        return serviceMap[serviceValue] || serviceValue;
+    };
 
     const handleLogin = (e) => {
         e.preventDefault();
@@ -28,11 +42,14 @@ const AdminDashboard = () => {
     const fetchRequests = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`${API_BASE_URL}/api/requests`);
+            console.log('Fetching from:', `${API_BASE_URL}/api/requests`);
+            const response = await axios.get(`${API_BASE_URL}/api/requests`, {
+                timeout: 10000
+            });
             setRequests(response.data);
         } catch (error) {
             console.error("Error fetching requests:", error);
-            alert('Error fetching requests');
+            alert('Error fetching requests: ' + error.message);
         } finally {
             setLoading(false);
         }
@@ -40,7 +57,9 @@ const AdminDashboard = () => {
 
     const fetchStatistics = async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/api/statistics`);
+            const response = await axios.get(`${API_BASE_URL}/api/statistics`, {
+                timeout: 10000
+            });
             setStatistics(response.data);
         } catch (error) {
             console.error("Error fetching statistics:", error);
@@ -57,8 +76,8 @@ const AdminDashboard = () => {
     const updateStatus = async (id, newStatus) => {
         try {
             await axios.put(`${API_BASE_URL}/api/requests/${id}`, { status: newStatus });
-            fetchRequests(); // Refresh the list
-            fetchStatistics(); // Refresh statistics
+            fetchRequests();
+            fetchStatistics();
         } catch (error) {
             console.error("Error updating status:", error);
             alert('Error updating status');
@@ -86,7 +105,7 @@ const AdminDashboard = () => {
         return (
             <div className="admin-login-container">
                 <div className="login-form">
-                    <h2>Miss Tania Ibichuk - Admin Access</h2>
+                    <h2>Miss Tatyana Dostagno - Admin Access</h2>
                     <p>Enter admin password to continue</p>
                     <form onSubmit={handleLogin}>
                         <input
@@ -106,7 +125,7 @@ const AdminDashboard = () => {
     return (
         <div className="admin-dashboard">
             <div className="admin-header">
-                <h2>{t('admin.title')} - Miss Tania Ibichuk</h2>
+                <h2>{t('admin.title')} - Miss Tatyana Dostagno</h2>
                 <button 
                     onClick={() => setIsAuthenticated(false)}
                     className="logout-btn"
@@ -175,45 +194,50 @@ const AdminDashboard = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredRequests.map((req) => (
-                                <tr key={req.id} className={`request-row status-${req.status}`}>
-                                    <td className="request-id">#{req.id}</td>
-                                    <td className="client-info">
-                                        <strong>{req.name}</strong><br />
-                                        <span className="phone">{req.phone}</span><br />
-                                        <small className="date">
-                                            {new Date(req.createdAt).toLocaleDateString()}
-                                        </small>
-                                    </td>
-                                    <td className="service-details">
-                                        <span className="service-type">{t(`services.${req.service}`)}</span><br />
-                                        <span className="appointment-time">
-                                            {new Date(req.time).toLocaleString()}
-                                        </span><br />
-                                        {req.notes && <small className="notes">{req.notes}</small>}
-                                    </td>
-                                    <td className="status-cell">
-                                        <select 
-                                            value={req.status} 
-                                            onChange={(e) => updateStatus(req.id, e.target.value)}
-                                            className={`status-select status-${req.status}`}
-                                        >
-                                            <option value="pending">Pending</option>
-                                            <option value="confirmed">Confirmed</option>
-                                            <option value="completed">Completed</option>
-                                            <option value="cancelled">Cancelled</option>
-                                        </select>
-                                    </td>
-                                    <td className="actions-cell">
-                                        <button 
-                                            className="btn-delete"
-                                            onClick={() => deleteRequest(req.id)}
-                                        >
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
+                            {filteredRequests.map((req) => {
+                                const serviceKey = getServiceTranslationKey(req.service);
+                                return (
+                                    <tr key={req.id} className={`request-row status-${req.status}`}>
+                                        <td className="request-id">#{req.id}</td>
+                                        <td className="client-info">
+                                            <strong>{req.name}</strong><br />
+                                            <span className="phone">{req.phone}</span><br />
+                                            <small className="date">
+                                                {new Date(req.createdAt).toLocaleDateString()}
+                                            </small>
+                                        </td>
+                                        <td className="service-details">
+                                            <span className="service-type">
+                                                {t(`services.${serviceKey}`)}
+                                            </span><br />
+                                            <span className="appointment-time">
+                                                {new Date(req.time).toLocaleString()}
+                                            </span><br />
+                                            {req.notes && <small className="notes">{req.notes}</small>}
+                                        </td>
+                                        <td className="status-cell">
+                                            <select 
+                                                value={req.status} 
+                                                onChange={(e) => updateStatus(req.id, e.target.value)}
+                                                className={`status-select status-${req.status}`}
+                                            >
+                                                <option value="pending">Pending</option>
+                                                <option value="confirmed">Confirmed</option>
+                                                <option value="completed">Completed</option>
+                                                <option value="cancelled">Cancelled</option>
+                                            </select>
+                                        </td>
+                                        <td className="actions-cell">
+                                            <button 
+                                                className="btn-delete"
+                                                onClick={() => deleteRequest(req.id)}
+                                            >
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
                     </table>
                 </div>

@@ -1,63 +1,66 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './MassagePages.css';
+import { useTranslation } from 'react-i18next';
 
 function AntiCellulite() {
+    const { t } = useTranslation();
+    
     return (
         <div className="massage-page">
             <div className="massage-header">
-                <Link to="/" className="back-button">← Back to Home</Link>
-                <h1>Anti-Cellulite Massage</h1>
-                <p className="massage-subtitle">Firm, tone, and smooth your skin naturally</p>
+                <Link to="/" className="back-button">← {t('back_to_home')}</Link>
+                <h1>{t('services.anti-Cellulite')}</h1>
+                <p className="massage-subtitle">{t('anti_cellulite.subtitle', 'Підтягніть, тонізуйте та згладьте шкіру природним шляхом')}</p>
             </div>
             
             <div className="massage-content">
                 <div className="benefits-section">
-                    <h2>Benefits of Anti-Cellulite Treatment</h2>
+                    <h2>{t('anti_cellulite.benefits_title', 'Переваги антицелюлітного лікування')}</h2>
                     <div className="benefits-grid">
                         <div className="benefit-card">
-                            <h3>✨ Smoother Skin</h3>
-                            <p>Reduces the appearance of cellulite and skin dimpling</p>
+                            <h3>✨ {t('anti_cellulite.benefit1_title', 'Гладша Шкіра')}</h3>
+                            <p>{t('anti_cellulite.benefit1_desc', 'Зменшує прояв целюліту та нерівностей шкіри')}</p>
                         </div>
                         <div className="benefit-card">
-                            <h3>💪 Firms & Tones</h3>
-                            <p>Improves skin elasticity and firmness in treated areas</p>
+                            <h3>💪 {t('anti_cellulite.benefit2_title', 'Підтягує & Тонізує')}</h3>
+                            <p>{t('anti_cellulite.benefit2_desc', 'Покращує еластичність та пружність шкіри в проблемних зонах')}</p>
                         </div>
                         <div className="benefit-card">
-                            <h3>🔥 Fat Reduction</h3>
-                            <p>Helps break down fat deposits and improve metabolism</p>
+                            <h3>🔥 {t('anti_cellulite.benefit3_title', 'Зменшення Жиру')}</h3>
+                            <p>{t('anti_cellulite.benefit3_desc', 'Допомагає розщеплювати жирові відкладення та покращує метаболізм')}</p>
                         </div>
                         <div className="benefit-card">
-                            <h3>🌊 Improved Circulation</h3>
-                            <p>Enhances blood flow to problem areas for better results</p>
+                            <h3>🌊 {t('anti_cellulite.benefit4_title', 'Покращена Циркуляція')}</h3>
+                            <p>{t('anti_cellulite.benefit4_desc', 'Покращує кровообіг у проблемних зонах для кращих результатів')}</p>
                         </div>
                     </div>
                 </div>
 
                 <div className="procedure-section">
-                    <h2>Targeted Approach</h2>
+                    <h2>{t('anti_cellulite.approach_title', 'Цільовий Підхід')}</h2>
                     <div className="target-areas">
-                        <h3>Common Treatment Areas:</h3>
+                        <h3>{t('anti_cellulite.treatment_areas', 'Зони лікування:')}</h3>
                         <div className="areas-grid">
-                            <div className="area">Thighs</div>
-                            <div className="area">Hips</div>
-                            <div className="area">Buttocks</div>
-                            <div className="area">Abdomen</div>
-                            <div className="area">Upper Arms</div>
+                            <div className="area">{t('anti_cellulite.area1', 'Стегна')}</div>
+                            <div className="area">{t('anti_cellulite.area2', 'Стегна')}</div>
+                            <div className="area">{t('anti_cellulite.area3', 'Сідниці')}</div>
+                            <div className="area">{t('anti_cellulite.area4', 'Живіт')}</div>
+                            <div className="area">{t('anti_cellulite.area5', 'Верхні частини рук')}</div>
                         </div>
                     </div>
                     <div className="treatment-info">
-                        <p><strong>Recommended:</strong> 2-3 sessions per week for optimal results</p>
-                        <p><strong>Duration:</strong> 60-90 minutes per session</p>
-                        <p><strong>Techniques:</strong> Deep kneading, cupping, and specialized movements</p>
+                        <p><strong>{t('anti_cellulite.recommended', 'Рекомендовано:')}</strong> {t('anti_cellulite.recommended_sessions', '2-3 сеанси на тиждень для оптимальних результатів')}</p>
+                        <p><strong>{t('anti_cellulite.duration', 'Тривалість:')}</strong> {t('anti_cellulite.duration_time', '60-90 хвилин на сеанс')}</p>
+                        <p><strong>{t('anti_cellulite.techniques', 'Техніки:')}</strong> {t('anti_cellulite.techniques_desc', 'Глибоке розминання, банкування та спеціалізовані рухи')}</p>
                     </div>
                 </div>
 
                 <div className="booking-cta">
-                    <h3>Start Your Body Transformation</h3>
-                    <p>Achieve smoother, firmer skin with our specialized techniques</p>
+                    <h3>{t('anti_cellulite.cta_title', 'Почніть Трансформацію Тіла')}</h3>
+                    <p>{t('anti_cellulite.cta_desc', 'Досягніть гладшої, пружнішої шкіри за допомогою наших спеціалізованих технік')}</p>
                     <Link to="/booking" className="cta-button">
-                        Book Anti-Cellulite Session
+                        {t('anti_cellulite.book_button', 'Забронювати Антицелюлітний Сеанс')}
                     </Link>
                 </div>
             </div>

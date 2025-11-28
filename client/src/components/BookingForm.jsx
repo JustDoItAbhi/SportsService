@@ -3,12 +3,15 @@ import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import './BookingForm.css';
 
+// Use environment variable with fallback
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://sportsservice-backend.onrender.com';
+
 const BookingForm = () => {
     const { t } = useTranslation();
     const [formData, setFormData] = useState({
         name: '',
         phone: '',
-        service: 'general-massage', // Updated default service
+        service: 'general-massage',
         time: '',
         notes: ''
     });
@@ -22,19 +25,32 @@ const BookingForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
+        setMessage('');
+        
         try {
-            await axios.post('http://localhost:5000/api/requests', formData);
+            console.log('Submitting to:', `${API_BASE_URL}/api/requests`);
+            const response = await axios.post(`${API_BASE_URL}/api/requests`, formData, {
+                timeout: 10000, // 10 second timeout
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            
             setMessage(t('success_message'));
             setFormData({ 
                 name: '', 
                 phone: '', 
-                service: 'general-massage', // Updated reset value
+                service: 'general-massage',
                 time: '', 
                 notes: '' 
             });
         } catch (error) {
             console.error("Error submitting form:", error);
-            setMessage(t('error_message'));
+            if (error.code === 'ERR_NETWORK') {
+                setMessage('Network error: Cannot connect to server. Please try again later.');
+            } else {
+                setMessage(t('error_message'));
+            }
         } finally {
             setIsSubmitting(false);
         }
@@ -44,7 +60,7 @@ const BookingForm = () => {
         <div className="booking-form-container">
             <div className="form-header">
                 <h2>{t('book_appointment')}</h2>
-                <p className="form-subtitle">{t('we are waiting for you')}</p>
+                <p className="form-subtitle">{t('description')}</p>
             </div>
             
             {message && (
@@ -63,7 +79,7 @@ const BookingForm = () => {
                             value={formData.name} 
                             onChange={handleChange} 
                             required 
-                            placeholder={t('name')}
+                            placeholder={t('name_placeholder')}
                         />
                     </div>
                     <div className="form-group">
@@ -74,7 +90,7 @@ const BookingForm = () => {
                             value={formData.phone} 
                             onChange={handleChange} 
                             required 
-                            placeholder={t('phone')}
+                            placeholder={t('phone_placeholder')}
                         />
                     </div>
                 </div>
@@ -108,7 +124,7 @@ const BookingForm = () => {
                         name="notes" 
                         value={formData.notes} 
                         onChange={handleChange}
-                        placeholder={t('notes')}
+                        placeholder={t('notes_placeholder')}
                         rows="4"
                     ></textarea>
                 </div>
