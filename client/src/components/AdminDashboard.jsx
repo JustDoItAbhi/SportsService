@@ -134,7 +134,6 @@ const AdminDashboard = () => {
                 </button>
             </div>
 
-            {/* Statistics */}
             {statistics && (
                 <div className="statistics">
                     <h3>Statistics</h3>
@@ -159,7 +158,6 @@ const AdminDashboard = () => {
                 </div>
             )}
 
-            {/* Filters */}
             <div className="filters">
                 <select 
                     value={selectedStatus} 
