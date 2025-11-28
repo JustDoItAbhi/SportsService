@@ -13,52 +13,51 @@ const Home = () => {
     }, []);
 
     const quotes = [
-        "Healing hands, peaceful mind, renewed spirit - at Miss Tania Ibichuk's Sanctuary",
-        "Let the rhythm of massage carry your worries away",
-        "In the silence between touches, find your inner peace",
-        "Your journey to relaxation begins with a single touch",
-        "Where stress melts away and serenity takes over",
-        "The art of healing through compassionate touch",
-        "Rediscover balance in body, mind, and soul"
+        t('quote_1', "Healing hands, peaceful mind, renewed spirit - at Miss Tatyana Dostagno's Sanctuary"),
+        t('quote_2', "Let the rhythm of massage carry your worries away"),
+        t('quote_3', "In the silence between touches, find your inner peace"),
+        t('quote_4', "Your journey to relaxation begins with a single touch"),
+        t('quote_5', "Where stress melts away and serenity takes over"),
+        t('quote_6', "The art of healing through compassionate touch"),
+        t('quote_7', "Rediscover balance in body, mind, and soul")
     ];
 
     const services = [
         {
             id: 'general-massage',
             name: t('services.GeneralMassage'),
-            description: 'Relaxing full-body massage for stress relief',
+            description: t('service_descriptions.general', 'Relaxing full-body massage for stress relief'),
             icon: '💆‍♀️'
         },
         {
             id: 'therapeutic-preventive',
             name: t('services.therapeutic and preventive'),
-            description: 'Targeted therapy for chronic muscle tension',
+            description: t('service_descriptions.therapeutic', 'Targeted therapy for chronic muscle tension'),
             icon: '✨'
         },
         {
             id: 'sports',
             name: t('services.sports'),
-            description: 'Enhance performance and recovery',
+            description: t('service_descriptions.sports', 'Enhance performance and recovery'),
             icon: '🏃‍♀️'
         },
         {
             id: 'lymphatic-drainage',
             name: t('services.lymphatic drainage'),
-            description: 'Healing scents for mind and body',
+            description: t('service_descriptions.lymphatic', 'Detoxifying and rejuvenating treatment'),
             icon: '🌸'
         },
         {
             id: 'honey',
             name: t('services.honey'),
-            description: 'Share the relaxation experience',
-            icon: '😎'
+            description: t('service_descriptions.honey', 'Natural honey for skin nourishment'),
+            icon: '🍯'
         },
         {
             id: 'anti-cellulite',
             name: t('services.anti-Cellulite'),
-            description: 'Specialized care for expecting mothers',
-            icon:'❤️'
-
+            description: t('service_descriptions.anti_cellulite', 'Reduce cellulite and improve skin texture'),
+            icon: '❤️'
         }
     ];
 
@@ -82,7 +81,7 @@ const Home = () => {
                 <p className={`quote-text ${fade ? 'fade-in' : 'fade-out'}`}>
                     "{quotes[currentQuote]}"
                 </p>
-                <p className="quote-author">- Miss Tania Ibichuk</p>
+                <p className="quote-author">- {t('Miss_Tatyana_Dostagno')}</p>
             </div>
         );
     };
@@ -117,7 +116,7 @@ const Home = () => {
                 
                 <div className={`hero-content ${isVisible ? 'visible' : ''}`}>
                     <h1 className="hero-title">
-                        <span className="title-main">Miss Tania Ibichuk</span>
+                        <span className="title-main">{t('welcome')}</span>
                         <span className="title-sub">Massage & Wellness Sanctuary</span>
                     </h1>
                     
@@ -180,6 +179,15 @@ const Home = () => {
                         >
                             {t('book_appointment')}
                         </button>
+                    </div>
+                    
+                    {/* Contact Section - USING TRANSLATIONS */}
+                    <div className="contact-info">
+                        <h2>{t('Contact_us')}</h2>
+                        <p>{t('Miss_Tatyana_Dostagno')}</p>
+                        <p>
+                            📞 +380977479729 {t('available_on')} 📲 {t('Viber')}, {t('Telegram')}
+                        </p>
                     </div>
                 </div>
             </section>
