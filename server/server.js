@@ -14,9 +14,11 @@ app.use(cors({
         'http://localhost:3000',
         'https://sportsservice-frontend.onrender.com',
         'http://localhost:5173',
-        process.env.FRONTEND_URL
+        'https://sportsservice-frontend.onrender.com' 
     ].filter(Boolean),
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(bodyParser.json());
 

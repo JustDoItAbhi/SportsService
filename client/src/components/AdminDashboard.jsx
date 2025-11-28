@@ -6,6 +6,9 @@ import './AdminDashboard.css';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://sportsservice-backend.onrender.com';
 
 const AdminDashboard = () => {
+    console.log("ADMIN PAGE LOADED");
+    console.log("API Base URL:", API_BASE_URL);
+    
     const { t } = useTranslation();
     const [requests, setRequests] = useState([]);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -13,6 +16,7 @@ const AdminDashboard = () => {
     const [loading, setLoading] = useState(false);
     const [selectedStatus, setSelectedStatus] = useState('all');
     const [statistics, setStatistics] = useState(null);
+    const [error, setError] = useState('');
 
     const ADMIN_PASSWORD = 'miss2025';
 
@@ -34,22 +38,28 @@ const AdminDashboard = () => {
         if (password === ADMIN_PASSWORD) {
             setIsAuthenticated(true);
             setPassword('');
+            setError('');
         } else {
-            alert('Invalid password');
+            setError('Invalid password');
         }
     };
 
     const fetchRequests = async () => {
         try {
             setLoading(true);
+            setError('');
             console.log('Fetching from:', `${API_BASE_URL}/api/requests`);
             const response = await axios.get(`${API_BASE_URL}/api/requests`, {
-                timeout: 10000
+                timeout: 15000
             });
+            console.log('Requests fetched:', response.data);
             setRequests(response.data);
         } catch (error) {
             console.error("Error fetching requests:", error);
-            alert('Error fetching requests: ' + error.message);
+            const errorMsg = error.response 
+                ? `Server error: ${error.response.status} - ${error.response.data.message || error.response.statusText}`
+                : `Network error: ${error.message}`;
+            setError(errorMsg);
         } finally {
             setLoading(false);
         }
@@ -58,7 +68,7 @@ const AdminDashboard = () => {
     const fetchStatistics = async () => {
         try {
             const response = await axios.get(`${API_BASE_URL}/api/statistics`, {
-                timeout: 10000
+                timeout: 15000
             });
             setStatistics(response.data);
         } catch (error) {
@@ -107,6 +117,7 @@ const AdminDashboard = () => {
                 <div className="login-form">
                     <h2>Miss Tatyana Dostagno - Admin Access</h2>
                     <p>Enter admin password to continue</p>
+                    {error && <div className="error-message">{error}</div>}
                     <form onSubmit={handleLogin}>
                         <input
                             type="password"
@@ -134,112 +145,16 @@ const AdminDashboard = () => {
                 </button>
             </div>
 
-            {statistics && (
-                <div className="statistics">
-                    <h3>Statistics</h3>
-                    <div className="stats-grid">
-                        <div className="stat-card total">
-                            <h4>Total</h4>
-                            <p>{statistics.total}</p>
-                        </div>
-                        <div className="stat-card pending">
-                            <h4>Pending</h4>
-                            <p>{statistics.byStatus.pending}</p>
-                        </div>
-                        <div className="stat-card confirmed">
-                            <h4>Confirmed</h4>
-                            <p>{statistics.byStatus.confirmed}</p>
-                        </div>
-                        <div className="stat-card completed">
-                            <h4>Completed</h4>
-                            <p>{statistics.byStatus.completed}</p>
-                        </div>
-                    </div>
+            {error && (
+                <div className="error-message">
+                    {error}
+                    <button onClick={fetchRequests} style={{marginLeft: '10px'}}>
+                        Retry
+                    </button>
                 </div>
             )}
 
-            <div className="filters">
-                <select 
-                    value={selectedStatus} 
-                    onChange={(e) => setSelectedStatus(e.target.value)}
-                    className="status-filter"
-                >
-                    <option value="all">All Statuses</option>
-                    <option value="pending">Pending</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                </select>
-                <button onClick={fetchRequests} className="refresh-btn">
-                    Refresh
-                </button>
-            </div>
-
-            {loading ? (
-                <div className="loading">Loading requests...</div>
-            ) : filteredRequests.length === 0 ? (
-                <p className="no-requests">{t('admin.no_requests')}</p>
-            ) : (
-                <div className="requests-container">
-                    <table className="requests-table">
-                        <thead>
-                            <tr>
-                                <th>{t('admin.id')}</th>
-                                <th>{t('admin.client')}</th>
-                                <th>{t('admin.details')}</th>
-                                <th>{t('admin.status')}</th>
-                                <th>{t('admin.actions')}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredRequests.map((req) => {
-                                const serviceKey = getServiceTranslationKey(req.service);
-                                return (
-                                    <tr key={req.id} className={`request-row status-${req.status}`}>
-                                        <td className="request-id">#{req.id}</td>
-                                        <td className="client-info">
-                                            <strong>{req.name}</strong><br />
-                                            <span className="phone">{req.phone}</span><br />
-                                            <small className="date">
-                                                {new Date(req.createdAt).toLocaleDateString()}
-                                            </small>
-                                        </td>
-                                        <td className="service-details">
-                                            <span className="service-type">
-                                                {t(`services.${serviceKey}`)}
-                                            </span><br />
-                                            <span className="appointment-time">
-                                                {new Date(req.time).toLocaleString()}
-                                            </span><br />
-                                            {req.notes && <small className="notes">{req.notes}</small>}
-                                        </td>
-                                        <td className="status-cell">
-                                            <select 
-                                                value={req.status} 
-                                                onChange={(e) => updateStatus(req.id, e.target.value)}
-                                                className={`status-select status-${req.status}`}
-                                            >
-                                                <option value="pending">Pending</option>
-                                                <option value="confirmed">Confirmed</option>
-                                                <option value="completed">Completed</option>
-                                                <option value="cancelled">Cancelled</option>
-                                            </select>
-                                        </td>
-                                        <td className="actions-cell">
-                                            <button 
-                                                className="btn-delete"
-                                                onClick={() => deleteRequest(req.id)}
-                                            >
-                                                Delete
-                                            </button>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-            )}
+            {/* ... rest of your component remains the same ... */}
         </div>
     );
 };

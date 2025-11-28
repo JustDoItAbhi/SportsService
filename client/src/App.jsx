@@ -46,7 +46,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/booking" element={<BookingForm />} />
-            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/AdminPage" element={<AdminDashboard />} />
             <Route path="/massage/therapeutic-preventive" element={<TherapeuticPreventive />} />
     <Route path="/massage/sports" element={<Sports />} />
     <Route path="/massage/lymphatic-drainage" element={<LymphaticDrainage />} />
@@ -54,7 +54,6 @@ function App() {
     <Route path="/massage/anti-cellulite" element={<AntiCellulite />} />
              <Route path="/massage/general-massage" element={<GeneralMassage />} />
              <Route path="/massage/anti-cellulite" element={<AntiCellulite />} />
-    
           </Routes>
         </div>
       </Router>
